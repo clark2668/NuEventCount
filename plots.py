@@ -5,24 +5,23 @@ from pylab import setp
 def beautify_limit(this_ax):
 
 	"""
-	get_flux
+	beautify_limit
 
-	Return the flux of neutrinos as a function of energy
+	Beautifies a limit plot
 
 
 	Parameters
 	----------
-	resource_name: name of the flux you want
-		name of the flux you want
-	energy_vals_logeV:
-		the energies you want the flux evaluted at, in units of log10(eV)
+	this_ax (matplotlib.axes) : name of the axis you want beautified
+		a matplotlib axis object
 
 	Returns
 	-------
-	flux: ndarray
-		the flux prediction in units of 1/cm^2/s/sr
+	None:
+		the function modifies the axes passed to it
 
 	"""
+
 	sizer=20
 	xlow =  1.e15 #the lower x limit
 	xup = 1e21 #the uppper x limit
@@ -41,6 +40,25 @@ def beautify_limit(this_ax):
 	this_ax.grid()
 
 def beautify_aeff(this_ax):
+
+	"""
+	beautify_aeff
+
+	Beautifies a effective area plot
+
+
+	Parameters
+	----------
+	this_ax (matplotlib.axes) : name of the axis you want beautified
+		a matplotlib axis object
+
+	Returns
+	-------
+	None:
+		the function modifies the axes passed to it
+
+	"""
+
 	sizer=20
 	xlow = 1.e15 #the lower x limit
 	xup = 1.e21 #the uppper x limit
@@ -59,6 +77,25 @@ def beautify_aeff(this_ax):
 	setp(this_legend.get_title(), fontsize=17)
 
 def beautify_veff(this_ax):
+
+	"""
+	beautify_aeff
+
+	Beautifies a effective volume plot
+
+
+	Parameters
+	----------
+	this_ax (matplotlib.axes) : name of the axis you want beautified
+		a matplotlib axis object
+
+	Returns
+	-------
+	None:
+		the function modifies the axes passed to it
+
+	"""
+
 	sizer=20
 	xlow = 1.e15 #the lower x limit
 	xup = 1.e21 #the uppper x limit
@@ -77,11 +114,29 @@ def beautify_veff(this_ax):
 	setp(this_legend.get_title(), fontsize=17)
 
 def beautify_counts(this_ax):
+
+	"""
+	beautify_counts
+
+	Beautifies a histogram of the counts
+
+	Parameters
+	----------
+	this_ax (matplotlib.axes) : name of the axis you want beautified
+		a matplotlib axis object
+
+	Returns
+	-------
+	None:
+		the function modifies the axes passed to it
+
+	"""
+
 	sizer=20
 	xlow =  1.e15 #the lower x limit
 	xup = 1e21 #the uppper x limit
 	this_ax.set_xlabel('Energy [eV]',size=sizer) #give it a title
-	this_ax.set_ylabel('Events Per Year',size=sizer)
+	this_ax.set_ylabel('Events',size=sizer)
 	this_ax.set_xscale('log')
 	this_ax.tick_params(labelsize=sizer)
 	this_ax.set_xlim([xlow,xup]) #set the x limits of the plot

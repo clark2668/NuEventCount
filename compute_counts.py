@@ -15,10 +15,8 @@ import plots as plotter
 I want your energy in units of log10(eV)
 And your veff in units of cm^3 * steradian
 In a CSV file with one header line. See sample_veff.csv as an example.
-
-
-Use like "python compute_counts.py veff_file.csv"
 '''
+
 if(len(sys.argv)<2):
 	print "Invalid usage! Use like: 'python compute_counts.py veff_file.csv'"
 	print "Aborting!"
@@ -63,4 +61,5 @@ n, bins, patches= ax_counts.hist(energy_bins,
 									linewidth=4)
 plotter.beautify_veff(ax_veff)
 plotter.beautify_counts(ax_counts)
+ax_counts.set_ylabel('Events Per Year',size=sizer) #modify this axis title from plotter default
 fig.savefig("test.png",edgecolor='none',bbox_inches="tight") #save the figure
