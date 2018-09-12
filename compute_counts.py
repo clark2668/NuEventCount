@@ -5,74 +5,58 @@ import matplotlib.pyplot as plt
 from pylab import setp
 from matplotlib.pyplot import rcParams
 rcParams['mathtext.default'] = 'regular'
+from scipy.interpolate import splrep, splev
 
 import constants as const
 import tools as tool
-import fluxes as flux
+import plots as plotter
 
-def compute_counts():
-
-	'''
-	I want your energy in units of log10(eV)
-	And your veff in units of cm^3 * steradian
-	'''
-
-	filename = sys.argv[1]
-	data = np.genfromtxt(filename,delimiter=',',skip_header=1,names=['energy_logev','veff'])
-	logeV = data['energy_logev']
-	veff = data['veff']
-	aeff = veff/tool.get_Lint(np.power(10.,logeV))
-
-	flux_energy_logeV= np.arange(16,20,0.5)
-	icecube_thrumu = flux.get_flux('icecube_thrumu',flux_energy_logeV)
-	
-	fig = plt.figure(figsize=(2.*11,8.5))
-	ax_aeff = fig.add_subplot(1,2,1)
-	ax_lim = fig.add_subplot(1,2,2)
-	ax_aeff.plot(np.power(10.,logeV),aeff,'-o',linewidth=2.0,color='blue',label=r'Sample System')
-	ax_lim.plot(np.power(10.,flux_energy_logeV),icecube_thrumu*np.power(10.,flux_energy_logeV),'-.', linewidth=3.0,color='orange',label=r'IceCube Thru-Mu (E$^{-2.19}$)')
-	beautify_limit(ax_lim)
-	beautify_aeff(ax_aeff)
-	fig.savefig("test.png",edgecolor='none',bbox_inches="tight") #save the figure
+'''
+I want your energy in units of log10(eV)
+And your veff in units of cm^3 * steradian
+In a CSV file with one header line. See sample_veff.csv as an example.
 
 
-def beautify_limit(this_ax):
-	sizer=20
-	xlow =  1.e15 #the lower x limit
-	xup = 1e21 #the uppper x limit
-	ylow = 1e-20 #the lower y limit
-	yup = 1e-10 #the upper y limit
-	this_ax.set_xlabel('Energy [eV]',size=sizer) #give it a title
-	this_ax.set_ylabel('E F(E) [$cm^{-2} s^{-1} sr^{-1}$]',size=sizer)
-	this_ax.set_yscale('log')
-	this_ax.set_xscale('log')
-	this_ax.tick_params(labelsize=sizer)
-	this_ax.set_xlim([xlow,xup]) #set the x limits of the plot
-	this_ax.set_ylim([ylow,yup]) #set the y limits of the plot
-	this_legend = this_ax.legend(loc='upper right',title='Single Event Sensitivity')
-	setp(this_legend.get_texts(), fontsize=17)
-	setp(this_legend.get_title(), fontsize=17)
-	this_ax.grid()
+Use like "python compute_counts.py veff_file.csv"
+'''
 
-def beautify_aeff(this_ax):
-	sizer=20
-	xlow = 1.e15 #the lower x limit
-	xup = 1.e21 #the uppper x limit
-	ylow = 1.e2 #the lower x limit
-	yup = 1.e10 #the uppper x limit
-	this_ax.set_xlabel('Energy  [eV]',size=sizer) #give it a title
-	this_ax.set_ylabel('[A$\Omega]_{eff}$  [cm$^2$sr]',size=sizer)
-	this_ax.set_yscale('log')
-	this_ax.set_xscale('log')
-	this_ax.tick_params(labelsize=sizer)
-	this_ax.set_xlim([xlow,xup]) #set the x limits of the plot
-	this_ax.set_ylim([ylow,yup]) #set the y limits of the plot
-	this_ax.grid()
-	this_legend = this_ax.legend(loc='lower left',title='Effective Area')
-	setp(this_legend.get_texts(), fontsize=17)
-	setp(this_legend.get_title(), fontsize=17)
+filename = sys.argv[1]
+data = np.genfromtxt(filename,delimiter=',',skip_header=1,names=['energy_logev','veff'])
+logeV = data['energy_logev']
+veff = data['veff']
+aeff = veff/tool.get_Lint(np.power(10.,logeV))
+interpolator = splrep(logeV, np.log10(aeff))
 
+livetime = const.SecPerYear
+counts=[]
+energy_bins=[]
+bins = np.arange(15.5,21,0.5)
+for bin in bins:
+	temp_logev = np.arange(bin,bin+0.5,0.1)
+	temp_energy = np.power(10.,temp_logev)
+	temp_aeff = np.power(10.,splev(temp_logev, interpolator))
+	temp_icecube = tool.get_flux('icecube_thrumu',temp_logev)
+	temp_counts = np.trapz(temp_icecube*temp_aeff*livetime,temp_energy)
 
-compute_counts()
+	counts.append(temp_counts)
+	energy_bins.append(np.power(10.,bin))
+counts=np.array(counts)
+energy_bins=np.array(energy_bins)
 
-
+fig = plt.figure(figsize=(2.*11,8.5))
+ax_veff = fig.add_subplot(1,2,1)
+ax_counts = fig.add_subplot(1,2,2)
+ax_veff.plot(np.power(10.,logeV),veff,'-o',linewidth=2.0,color='blue',label=r'Sample System')
+print counts
+n, bins, patches= ax_counts.hist(energy_bins,
+									bins=np.power(10.,np.arange(15,22,0.5)),
+									weights=counts,
+									label=r'IceCube Thru-Mu E$^{-2.19}$: %.2f'%counts.sum(),
+									fill=False, 
+									stacked=True, 
+									histtype='step', 
+									edgecolor='blue',
+									linewidth=4)
+plotter.beautify_veff(ax_veff)
+plotter.beautify_counts(ax_counts)
+fig.savefig("test.png",edgecolor='none',bbox_inches="tight") #save the figure
