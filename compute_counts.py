@@ -19,6 +19,10 @@ In a CSV file with one header line. See sample_veff.csv as an example.
 
 Use like "python compute_counts.py veff_file.csv"
 '''
+if(len(sys.argv)<2):
+	print "Invalid usage! Use like: 'python compute_counts.py veff_file.csv'"
+	print "Aborting!"
+	exit()
 
 filename = sys.argv[1]
 data = np.genfromtxt(filename,delimiter=',',skip_header=1,names=['energy_logev','veff'])
