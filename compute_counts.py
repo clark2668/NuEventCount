@@ -49,7 +49,6 @@ fig = plt.figure(figsize=(2.*11,8.5))
 ax_veff = fig.add_subplot(1,2,1)
 ax_counts = fig.add_subplot(1,2,2)
 ax_veff.plot(np.power(10.,logeV),veff,'-o',linewidth=2.0,color='blue',label=r'Sample System')
-print counts
 n, bins, patches= ax_counts.hist(energy_bins,
 									bins=np.power(10.,np.arange(15,22,0.5)),
 									weights=counts,
@@ -59,7 +58,12 @@ n, bins, patches= ax_counts.hist(energy_bins,
 									histtype='step', 
 									edgecolor='blue',
 									linewidth=4)
+print "Energy \t Counts "
+for this_bin, this_count in zip(bins,n):
+	print "%.2f \t %.4f "%(np.log10(this_bin), this_count)
+print "Total: %.4f"%n.sum()
+
 plotter.beautify_veff(ax_veff)
 plotter.beautify_counts(ax_counts)
-ax_counts.set_ylabel('Events Per Year',size=sizer) #modify this axis title from plotter default
-fig.savefig("test.png",edgecolor='none',bbox_inches="tight") #save the figure
+ax_counts.set_ylabel('Events Per Year',size=17) #modify this axis title from plotter default
+fig.savefig("example.png",edgecolor='none',bbox_inches="tight") #save the figure
