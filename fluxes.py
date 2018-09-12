@@ -31,7 +31,7 @@ def get_flux(resource_name, energy_vals_logeV):
 			return 3.03 * ((E/1.e14)**-2.19) * 1e-27
 		flux = icecube_thrumu_function(np.power(10.,energy_vals_logeV))
 
-	else if(resource_name=='icecube_combined'):
+	elif(resource_name=='icecube_combined'):
 		def icecube_combined_function(E):
 			return 6.7 * ((E/1.e14)**-2.50) * 1e-27
 		flux = icecube_combined_function(np.power(10.,energy_vals_logeV))

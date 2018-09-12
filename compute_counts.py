@@ -30,7 +30,7 @@ def compute_counts():
 	ax_aeff = fig.add_subplot(1,2,1)
 	ax_lim = fig.add_subplot(1,2,2)
 	ax_aeff.plot(np.power(10.,logeV),aeff,'-o',linewidth=2.0,color='blue',label=r'Sample System')
-	ax_lim.plot(np.power(10.,log_energy),icecube_thrumu*np.power(10.,log_energy),'-.', linewidth=3.0,color='orange',label=r'IceCube Thru-Mu (E$^{-2.19}$)')
+	ax_lim.plot(np.power(10.,flux_energy_logeV),icecube_thrumu*np.power(10.,flux_energy_logeV),'-.', linewidth=3.0,color='orange',label=r'IceCube Thru-Mu (E$^{-2.19}$)')
 	beautify_limit(ax_lim)
 	beautify_aeff(ax_aeff)
 	fig.savefig("test.png",edgecolor='none',bbox_inches="tight") #save the figure
