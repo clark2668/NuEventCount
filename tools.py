@@ -49,9 +49,7 @@ def get_flux(resource_name, energy_vals_logeV):
 
 	Returns
 	-------
-	energy_bins: ndarray
-		the energy bins the limit is defined over in the units of log10(eV)
-	flux_prediction: ndarray
+	flux: ndarray
 		the flux prediction in units of 1/cm^2/s/sr
 
 	"""
