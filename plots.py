@@ -109,7 +109,7 @@ def beautify_veff(this_ax):
 	this_ax.set_xlim([xlow,xup]) #set the x limits of the plot
 	this_ax.set_ylim([ylow,yup]) #set the y limits of the plot
 	this_ax.grid()
-	this_legend = this_ax.legend(loc='upper left',title='Effective Area')
+	this_legend = this_ax.legend(loc='upper left',title='Effective Volume')
 	setp(this_legend.get_texts(), fontsize=17)
 	setp(this_legend.get_title(), fontsize=17)
 
